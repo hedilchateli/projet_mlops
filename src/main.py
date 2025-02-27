@@ -4,19 +4,24 @@ from model_pipeline import (
     train_model,
     evaluate_model,
     save_model,
-    load_model,
 )
 
 # Chemins des fichiers CSV sous WSL
-file_path_1 = "/home/hedil/hedil_ch_4DS3_mlproject/data/churn-bigml-80.csv"
-file_path_2 = "/home/hedil/hedil_ch_4DS3_mlproject/data/churn-bigml-20.csv"
+file_path_1 = (
+    "/home/hedil/hedil_ch_4DS3_mlproject/data/churn-bigml-80.csv"
+)
+file_path_2 = (
+    "/home/hedil/hedil_ch_4DS3_mlproject/data/churn-bigml-20.csv"
+)
 
 
 def main():
     try:
         # 1. Préparation des données
         print("🚀 Préparation des données...")
-        X_train, X_test, y_train, y_test = prepare_data(file_path_1, file_path_2)
+        X_train, X_test, y_train, y_test = prepare_data(
+            file_path_1, file_path_2
+        )
         print("✅ Données préparées avec succès !")
 
         # 2. Entraînement du modèle
@@ -26,13 +31,17 @@ def main():
 
         # 3. Évaluation du modèle
         print("\n🚀 Évaluation du modèle...")
-        accuracy, report, matrix = evaluate_model(model, X_test, y_test)
+        accuracy, report, matrix = evaluate_model(
+            model, X_test, y_test
+        )
 
         # 4. Sauvegarde du modèle
         print("\n🚀 Sauvegarde du modèle...")
         save_model(
             model,
-            filename="/home/hedil/hedil_ch_4DS3_mlproject/models/random_forest.pkl",
+            filename=(
+                "/home/hedil/hedil_ch_4DS3_mlproject/models/random_forest.pkl"
+            ),
         )
         print("✅ Modèle sauvegardé avec succès !")
 
