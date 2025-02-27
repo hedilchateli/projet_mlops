@@ -31,7 +31,7 @@ format_code:
 # Vérification de la qualité du code avec flake8
 check_code_quality:
 	@echo "Vérification de la qualité du code avec flake8..."
-	. venv/bin/activate && flake8 src/
+	. venv/bin/activate && flake8 --config .flake8 src/
 
 # Vérification de la sécurité du code avec bandit
 check_code_security:
