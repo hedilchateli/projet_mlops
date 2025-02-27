@@ -1,12 +1,10 @@
-
 import pandas as pd
 import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import os
+
 
 # Définition des chemins des fichiers CSV sous WSL
 file_path_1 = "/home/hedil_ch_4DS3_mlproject/data/churn-bigml-80.csv"
@@ -28,9 +26,12 @@ def prepare_data(file_path_1, file_path_2):
     y = df[target_column]
 
     # Encodage des variables catégoriques en nombres
-    X = pd.get_dummies(
-        X
-    )  # Convertit les variables catégoriques en indicateurs numériques
+    X = pd.get_dummies(X)
+
+    # Convertir les colonnes d'entiers en floats pour éviter les problèmes de valeurs manquantes
+    for col in X.columns:
+        if X[col].dtype == "int64":
+            X[col] = X[col].astype("float64")
 
     # Diviser les données en ensemble d'entraînement et de test
     X_train, X_test, y_train, y_test = train_test_split(
@@ -49,20 +50,36 @@ def train_model(X_train, y_train):
 
 
 def evaluate_model(model, X_test, y_test):
-    """Évalue le modèle avec un rapport complet."""
+    """Évalue le modèle avec un rapport complet et affiche les métriques clairement."""
     # Prédiction sur l'ensemble de test
     y_pred = model.predict(X_test)
 
     # Calcul des métriques
     accuracy = accuracy_score(y_test, y_pred)
-    report = classification_report(y_test, y_pred)
+
+    # Utilisation de output_dict=True pour obtenir un dictionnaire
+    report = classification_report(y_test, y_pred, output_dict=True)
+
+    # Matrice de confusion
     matrix = confusion_matrix(y_test, y_pred)
 
-    # Affichage des résultats
-    print("\n📊 **Rapport d'évaluation du modèle**")
+    # Extraction des valeurs du rapport
+    precision = report["weighted avg"]["precision"]
+    recall = report["weighted avg"]["recall"]
+    f1_score = report["weighted avg"]["f1-score"]
+
+    # Affichage des résultats de manière lisible
+    print("\n🚀 Évaluation du modèle...")
+
     print(f"✅ Précision du modèle : {accuracy:.4f}")
-    print("\n🔹 Rapport de classification :\n", report)
-    print("\n🔹 Matrice de confusion :\n", matrix)
+    print("\n🔹 Rapport de classification :")
+    print(f"Précision : {precision:.4f}")
+    print(f"Rappel : {recall:.4f}")
+    print(f"Score F1 : {f1_score:.4f}")
+
+    # Affichage de la matrice de confusion
+    print("\n🔹 Matrice de confusion :")
+    print(matrix)
 
     return accuracy, report, matrix
 
